@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+void push (int item);
+void pop();
+void imprimir();
+int entrada_dados();
+
+typedef struct apelido_no{
+	int dado;
+	struct apelido_no *proximo;
+}no;
+
+no *top=NULL;
+int main(){
+	int n,opcao;
+	do{
+		system("cls");
+		printf("");
+		printf("\nescolha uma opcao (0-4): ");
+		scanf("%d",&opcao);
+		switch (opcao){
+			case 1:
+			n=entrada_dados();
+			push(n);
+			break;
+			case 2:
+			pop();
+			break;
+			case 3:
+			imprimir();
+			break;
+		}
+	}while (opcao!=4);
+	system("pause");
+	return 0;
+}
+
+void push(int item){
+	printf("\nempilhando...\n");
+	no *novo=malloc(sizeof(no));
+	novo->dado=item;
+	novo->proximo=top;
+	top=novo;
+	printf("\nvalor %d empilhado\n",novo->dado);
+	system("pause");
+}
+
+void pop(){
+	printf("\ndesempilhando...\n");
+	if (top==NULL)
+		printf("a pilha esta vazia");
+	 else{
+		no *temp;
+		temp=top;
+		top=top->proximo;
+		printf("\n%d desempilhado \n",temp->dado);
+		free(temp);
+	}
+	system("pause");
+}
+
+void imprimir(){
+	no *temp;
+	temp=top;
+	printf("\nimprimindo pilha...\n");
+	while (temp!=NULL){
+		printf("%d\n", temp->dado);
+		temp=temp->proximo;
+	}
+	system("pause");
+}
+
+int entrada_dados(){
+	int valor;
+	printf("\nentre com valor a empilhar: ");
+	scanf("%d",&valor);
+	return valor;
+}
