@@ -1,150 +1,105 @@
 #include <stdio.h>
-#include <locale.h>
-#include <windows.h>
+#include <stdlib.h>
 
-typedef struct {
-    char nome[50]; // Nome do Jogador Ex: Moreno
-    int idade; // Idde do jogador Ex: 41
-    char classe[20]; // Classe do Jogador Ex: "Guerreiro", "Mago", etc.
-} personagem;
-//------------------------------------------------------------------------------
-typedef struct {
-    int nivel; // Nível do jogador no jogo Ex: 12
-    int experiencia; // Pontuação de experiência Ex: 890
-    personagem p; // Dados do personagem
-} jogador;
-//------------------------------------------------------------------------------
-typedef struct apelido {
-    jogador jog; //jog é uma variável do tipo jogador
-    struct apelido *proximo; //*proximo é um ponteiro do nó
+
+typedef struct apelino_no{
+	char nome[30];
+	int idade;
+	struct apelino_no *proximo;
 }no;
-//------------------------------------------------------------------------------
-no *topo = NULL; //topo é ponteiro que indica o TOPO da pilha
 
-void push(jogador j);     // procedimento Empilhar
-void pop();               // procedimento Desempilhar
-void mostra_pilha();      // procedimento Imprimir pilha
-void liberar_pilha();     // procedimento Limpar memória
-jogador entrada_dados();  // função Entrada de dados que retorna dados do jogador
+no *top = NULL;
 
-//-------------------------------------------
-int main() {
-    setlocale(LC_ALL, ""); //ativa teclado padrão do windows
-    int opcao; //opção para o MENU
-    jogador dados; //dados é uma variável do tipo jogador
-    do {
-        system("cls");
-        printf("\nMenu - Pilha de Jogadores");
-        printf("\n1. Empilhar Jogador");
-        printf("\n2. Desempilhar Jogador");
-        printf("\n3. Apresenta Pilha");
-        printf("\n4. Limpar Memória");
-        printf("\n5. Sair");
-        printf("\nOpcao: ");
-        scanf("%d", &opcao);
-        fflush(stdin); // limpa buffer do teclado
+void push(no n);
+void pop();
+void imprimir();
+void FreePilha();
 
-        switch (opcao) {
-            case 1:
-                dados = entrada_dados(); //variável dados recebe informacoes do jogador
-                push(dados); //empilha dados do jogador
-                break;
-            case 2:
-                pop(); //desempilha o jogador do topo
-                break;
-            case 3:
-                mostra_pilha(); //apresenta a pilha toda
-                break;
-            case 4:
-                liberar_pilha();
-                break;
-            case 5:
-            	printf("saindo do programa\n");
-            	break;
-            default:
-                printf("Opção inválida");
-                           
-        }
-       // system("pause");
-    } while (opcao != 5);
 
-    liberar_pilha(); // limpeza final
-    printf("\nFim do programa.\n");
-    system("pause");
-    return 0;
-}
-//-------------------------------------------
-void push(jogador j) {
-   no *novo=malloc(sizeof(no));
-   if(novo){
-   	novo-> jog=j;
-   	novo-> proximo=topo;
-   	topo=novo;
-    printf("\nJogador %s empilhado com sucesso!\n", j.p.nome);
-}
-else
-	printf("\n Nao foi possivei alocar memoria \n\n");
+int main(){
+	int escolha;
+	no novoNo;
+	do{
+		system("cls");
+        printf("\n Digite 1 para Empilhar");
+        printf("\n Digite 2 para Desempilhar");
+        printf("\n Digite 3 para Imprimir");
+        printf("\n Digite 4 para encerrar o programa");
+        scanf("%d", &escolha);
+        fflush(stdin);
+        
+        switch(escolha){
+        	case 1:
+        		printf("Digite o nome a ser empilhado");
+				scanf("%s", novoNo.nome);
+        		fflush(stdin);
+        		printf("Digite a idade a ser empilhado");
+        		scanf("%d", &novoNo.idade);
+        		fflush(stdin);
+        		push(novoNo);
+        		break;
+        	case 2:
+        		pop();
+        		break;
+        	case 3:
+        		imprimir();
+        		break;
+        	case 4:
+        		printf("Encerrando o programa...");
+        		break;
+		}
+	}while(escolha != 4);
+	FreePilha();
+	printf("\n memoria liberada e programa encerrado");
 	system("pause");
-}
-//-------------------------------------------
-
-void pop() {
- 	if(topo== NULL){
- 	printf("A pilha esta vazia\n");
- }
- 	else{
- 		no *temp;
- 		temp=topo;
- 		topo=topo->proximo;
- 		printf("\ndesempilhado com sucesso\n\n");
- 		free(temp);
-	 }
-	system("pause");
+	return 0;
 }
 
-//-------------------------------------------
-void mostra_pilha() {
-    no *temp;
-    temp=topo;
-    printf("\nIMPRIMINDO PILHA\n");
-    while(temp!=NULL){
-    	printf("%s %d %s %d %d\n",temp->jog.p.nome,temp->jog.p.idade,temp->jog.p.classe,temp->jog.nivel,temp->jog.experiencia);
-    	temp=temp ->proximo;
+void push(no n){
+	no *novo = malloc(sizeof(no));
+	if(novo != NULL){
+		strcpy(novo->nome, n.nome);
+		novo->idade = n.idade;
+		novo->proximo = top;
+		top = novo;
+		printf("\n empilhado");
+	}else{
+		printf("\n nao foi possivel empilhar");
+		system("pause");
+	}
+}
+
+void pop(){
+	if(top==NULL){
+		printf("\n Pilha vazia");
+	}
+	else{
+		no *temp;
+		temp= top;
+		top= top->proximo;
+		printf("\nNome: %s, Idade: %d foi desempilhado", temp->nome, temp->idade);
+		free(temp);
 	}
 	system("pause");
 }
-//-------------------------------------------
-void liberar_pilha() {
- 	while(topo!=NULL){
- 		pop();
-	 }
-    printf("\nMemória liberada com sucesso.\n");
-    system("pause");
 
+void imprimir(){
+	if(top==NULL){
+		printf("\n Pilha vazia");
+	}
+	else{
+		no *temp;
+		temp=top;
+		while(temp != NULL){
+			printf("\nNome: %s, Idade: %d", temp->nome, temp->idade);
+			temp= temp->proximo;
+		}
+	}
+	system("pause");
 }
-//-------------------------------------------
-jogador entrada_dados() {
-    jogador jog;
-    printf("\nCadastro do Jogador:\n");
-    printf("Nome: ");
-    fflush(stdin);
-    scanf("%s",&jog.p.nome);
-    printf("Idade: ");
-    fflush(stdin);
-    scanf("%d",&jog.p.idade);
-    fflush(stdin);
-    printf("Classe: ");
-    fflush(stdin);
-    scanf("%s",&jog.p.classe);
-    printf("Nivel: ");
-    fflush(stdin);
-    scanf("%d",&jog.nivel);
-    fflush(stdin);
-    printf("Experiencia: ");
-    scanf("%d",&jog.experiencia);
-    fflush(stdin);
-    
-    //concluir o restante dos dados
-//------------------------------------------------------------------------------
-    return jog;
-}	
+
+void FreePilha(){
+	while(top != NULL){
+		pop();
+	}
+}
